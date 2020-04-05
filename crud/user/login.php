@@ -95,8 +95,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="form-group col-md-5 ml-auto mr-auto">
 <!--                    <small class="form-control form-control-lg">--><?php //echo $me?><!--</small>-->
                     <div>
-                        <small class="text-primary"?><?php echo "Client: " . $email . "\t" . $password; ?></small><br>
-                        <small class="text-primary"><?php echo "Database: " . login($email, $password); ?></small>
+                        <small class="text-primary"?><?php echo "Client: <br>"; ?></small>
+                        <small class="text-primary"><?php echo $email . "    " . $password; ?></small><br>
+                        <small class="text-danger"><?php echo "Database: <br>"; ?></small>
+                        <small class="text-danger"><?php echo login($email, $password); ?></small>
                     </div>
                 </div>
             </div>
