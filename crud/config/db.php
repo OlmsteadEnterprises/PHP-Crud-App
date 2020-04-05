@@ -18,7 +18,7 @@ $connection = mysqli_connect($host, $user, $password, $db_name);
 if (!$connection) {
   die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
 }
-echo 'Connection Successful!';
+//echo 'Connection Successful!';
 
 $sql = "CREATE DATABASE phpCrudDB";
 $sql = "CREATE TABLE Users (
@@ -32,10 +32,9 @@ $sql = "CREATE TABLE Users (
 )";
 
 if(mysqli_query($connection, $sql)) {
-    echo 'Users Table Created Successfully';
-} else {
-    echo 'Error creating users Table: ' . mysqli_error($connection);
+    echo 'Table created successfully!!!';
 }
+
 mysqli_close($connection);
 //end of php code
  ?>

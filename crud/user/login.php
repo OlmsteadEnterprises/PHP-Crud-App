@@ -1,6 +1,7 @@
 <?php
 //Login PHP File
-$email = $password = "";
+global $email, $password, $filtered_email, $pass2;
+//$email = $password = $filtered_email = $pass2 = "";
 $emailError = $passwordError = "";
 
 function formData($data) {
@@ -20,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $password = formData($_POST["password"]);
     }
-
+//    login($email, $password);
 }//outer if statement
 //End of PHP Code
 ?>
@@ -71,27 +72,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- Validation Form -->
 <div class="container" align="center">
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+    <form action="" method="post">
         <div class="card bg-dark text-center card-form">
             <div class="card-body">
                 <h3 class="text-light">Login</h3>
                 <p class="text-light">Please fill out this form to register!</p>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="email" class="form-control form-control-lg" name="email" placeholder="Email">
-<!--                    <div class="invalid_feedback is-invalid">-->
-<!--                        <small class="text-danger">--><?php //echo $fnameError ?><!--</small>-->
-<!--                    </div>-->
+                    <div class="">
+                        <small class="text-danger"><?php echo $emailError; ?></small>
+                    </div>
                 </div>
                 <!-- Password -->
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="password" placeholder="Password">
+                    <div class="">
+                        <small class="text-danger"><?php echo $passwordError; ?></small>
+                    </div>
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
-                    <input type="submit" class="btn btn-outline-light btn-block" placeholder="Sign Up">
+                    <input type="submit" class="btn btn-outline-light btn-block">
                 </div>
-<!--                <div class="form-group col-md-5 ml-auto mr-auto">-->
-<!--                    <small class="form-control corm-control-lg">--><?php //echo $me?><!--</small>-->
-<!--                </div>-->
+                <div class="form-group col-md-5 ml-auto mr-auto">
+<!--                    <small class="form-control form-control-lg">--><?php //echo $me?><!--</small>-->
+                    <div>
+                        <small class="text-primary"?><?php echo "Client: <br>"; ?></small>
+                        <small class="text-primary"><?php echo $email . "    " . $password; ?></small><br>
+                        <small class="text-danger"><?php echo "Database: <br>"; ?></small>
+                        <small class="text-danger"><?php echo login($email, $password); ?></small>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
@@ -113,33 +123,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php
 //PHP Database Logic for login.php
-$host = 'localhost';
-$user = 'root';
-$password = '';
-$db_name = 'phpcrudtutorial';
+function login($db_email, $db_password) {
+    $host = 'localhost';
+    $user = 'root';
+    $password = '';
+    $db_name = 'phpcrudtutorial';
 
-$connection = mysqli_connect($host, $user, $password, $db_name);
-if (!$connection) {
-    die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
-} //check connection
+    $connection = mysqli_connect($host, $user, $password, $db_name);
+    if (!$connection) {
+        die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
+    } //check connection
 
-$sql = "SELECT email, password FROM Users WHERE email='$email' AND password='$password'";
-$result = mysqli_query($connection, $sql);
-$count = mysqli_num_rows($result);
-if ($count == 0) {
-    $message = "Invalid email or password!";
-} else {
-    $message = "You are successfully logged in!";
-}
+    $id_query = "SELECT id FROM Users WHERE email = '$db_email'";
+    $fname_query = "SELECT firstname FROM Users WHERE email = '$db_email'";
+    $lname_query = "SELECT lastname FROM Users WHERE email = '$db_email'";
+    $email_sql = "SELECT email FROM Users WHERE email='$db_email'";
+    $password_sql = "SELECT password FROM Users WHERE password = '$db_password'";
+    $key_query = "SELECT activation_key FROM Users WHERE email = '$db_email'";
+    $active_query = "SELECT is_active FROM Users WHERE email = '$db_email'";
 
+    $email_result = mysqli_query($connection, $email_sql);
+    $password_result = mysqli_query($connection, $password_sql);
+    $email_count = mysqli_num_rows($email_result);
+    $password_count = mysqli_num_rows($password_result);
 
-//while ($row = mysqli_fetch_assoc($result)) {
-//    echo  $row["email"] . "\t" . $row["password"];
-//
-//}
+    $filtered_email = filter_var($db_email, FILTER_SANITIZE_EMAIL);
+    $pass2 = mysqli_real_escape_string($connection, $db_password);
 
+    if (!$email_sql) {
+        die("QUERY FAILED!!! " . mysqli_error($connection));
+    }
+    if($email_count <= 0) {
+        if (!empty($db_email) && !empty($db_password)) {
+            return "User NOT found! Try a different email and password!";
+        }
+    } else {
+        echo $filtered_email . "\t" . $pass2;
 
-mysqli_close($connection);
+    }
+
+    mysqli_close($connection);
+}//login function
 
 
 
