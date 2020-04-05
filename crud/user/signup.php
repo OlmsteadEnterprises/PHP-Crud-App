@@ -52,7 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $db_password = '';
         $db_name = 'phpcrudtutorial';
 
-
         $connection = mysqli_connect($host, $user, $db_password, $db_name);
         if (!$connection) {
             die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
@@ -62,14 +61,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $query = mysqli_query($connection, $sql);
             $count = mysqli_num_rows($query);
 
+//            $saltQuery = "SELECT randSaltPass FROM Users";
+//            $sqlSalt = mysqli_query($connection, $saltQuery);
+//            $row = mysqli_fetch_array($sqlSalt);
+//            $salt = $row['randSaltPass'];
+//            $cryptPassword = crypt($password, $salt);
+//
+//            $hash = password_hash($password, PASSWORD_BCRYPT);
+            //var_dump($hash);
             if ($count > 0) {
                 $error = "User with Email Already Exists!";
             } else {
                 if (!empty($fname) && !empty($lname) && !empty($email) && !empty($password) && !empty($confirmPassword)) {
-                    $firstName = mysqli_real_escape_string($connection, $fname);
-                    $lastName = mysqli_real_escape_string($connection, $lname);
-                    $email2 = mysqli_real_escape_string($connection, $email);
-                    $pword = mysqli_real_escape_string($connection, $password);
+                    $firstName = ucwords(mysqli_real_escape_string($connection, $fname));
+                    $lastName = ucwords(mysqli_real_escape_string($connection, $lname));
+                    $email2 = ucwords(mysqli_real_escape_string($connection, $email));
+                    $pword = ucwords(mysqli_real_escape_string($connection, $password));
+                    $hash = password_hash($_POST['password'], PASSWORD_BCRYPT);
                     //$confirmPword = mysqli_real_escape_string($connection, $confirmPword);
                     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         $emailError2 = "Email is invalid!";
@@ -89,6 +97,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 //                    }
                     $userActivationKey = md5(rand().time());
                     validation($firstName, $lastName, $email2, $pword, $userActivationKey, '0');
+//                    $userActivationKey = md5(rand().time());
+//                    $sql = "INSERT INTO Users (firstname, lastname, email, password, activation_key, is_active, date_time) VALUES ('$firstName', '$lastName', '$email2', '$pword', '$userActivationKey', '0', current_date )";
+//                    if (!mysqli_query($connection, $sql)) {
+//                        $last_id = mysqli_insert_id($connection);
+//                        echo 'Query Failed!!! ' . mysqli_error($connection);
+//                    } else {
+//                        echo 'Query SUCCESSFUL!';
+//                    }
+
                 }//check if fields are empty
             }//else statement
         }//is set statement
@@ -158,9 +175,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <small class="text-danger"><?php echo $fnameError ?></small>
                         <small class="text-danger"><?php echo $fnameError2 ?></small>
                     </div>
-<!--                    <div class="alert alert-danger">-->
-<!--                        <small>--><?php //echo $fnameError2 ?><!--</small>-->
-<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="text" class="form-control form-control-lg" name="lname" placeholder="Last Name">
@@ -168,9 +182,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <small class="text-danger"><?php echo $lnameError; ?></small>
                         <small class="text-danger"><?php echo $lnameError2 ?></small>
                     </div>
-<!--                    <div class="alert alert-danger">-->
-<!--                        <small>--><?php //echo $lnameError2 ?><!--</small>-->
-<!--                    </div>-->
+
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="email" class="form-control form-control-lg" name="email" placeholder="Email">
@@ -178,9 +190,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <small class="text-danger"><?php echo $emailError; ?></small>
                         <small class="text-danger"><?php echo $emailError2 ?></small>
                     </div>
-<!--                    <div class="alert alert-danger">-->
-<!--                        <small>--><?php //echo $emailError2 ?><!--</small>-->
-<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="password" placeholder="Password">
@@ -188,9 +197,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <small class="text-danger"><?php echo $passwordError; ?></small>
                         <small class="text-danger"><?php echo $pwordError2 ?></small>
                     </div>
-<!--                    <div class="alert alert-danger">-->
-<!--                        <small>--><?php //echo $pwordError2 ?><!--</small>-->
-<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="confirmPassword" placeholder="Confirm Password">
@@ -200,9 +206,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="submit" class="btn btn-outline-light btn-block" placeholder="Sign Up" name="submit">
-<!--                    <div class="alert alert-danger">-->
-<!--                        <strong>--><?php //$error ?><!--</strong>-->
-<!--                    </div>-->
                 </div>
             </div>
         </div>
