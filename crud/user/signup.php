@@ -61,6 +61,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $query = mysqli_query($connection, $sql);
             $count = mysqli_num_rows($query);
 
+//            $saltQuery = "SELECT randSaltPass FROM Users";
+//            $sqlSalt = mysqli_query($connection, $saltQuery);
+//            $row = mysqli_fetch_array($sqlSalt);
+//            $salt = $row['randSaltPass'];
+//            $cryptPassword = crypt($password, $salt);
+//
+//            $hash = password_hash($password, PASSWORD_BCRYPT);
+            //var_dump($hash);
             if ($count > 0) {
                 $error = "User with Email Already Exists!";
             } else {
@@ -69,6 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $lastName = ucwords(mysqli_real_escape_string($connection, $lname));
                     $email2 = ucwords(mysqli_real_escape_string($connection, $email));
                     $pword = ucwords(mysqli_real_escape_string($connection, $password));
+                    $hash = password_hash($_POST['password'], PASSWORD_BCRYPT);
                     //$confirmPword = mysqli_real_escape_string($connection, $confirmPword);
                     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         $emailError2 = "Email is invalid!";
@@ -83,7 +92,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 //                        $pwordError2 = "Password must be between 7-15 characters.";
 //                    }
                     $userActivationKey = md5(rand().time());
-                    //validation($fname, $lname, $email, $password, $userActivationKey, '0', date("d-m-Y H:i:s"));
                     $sql = "INSERT INTO Users (firstname, lastname, email, password, activation_key, is_active, date_time) VALUES ('$firstName', '$lastName', '$email2', '$pword', '$userActivationKey', '0', current_date )";
                     if (!mysqli_query($connection, $sql)) {
                         $last_id = mysqli_insert_id($connection);
