@@ -1,6 +1,7 @@
 <?php
 //Login PHP File
-$email = $password = $filtered_email = $pass2 = "";
+global $email, $password, $filtered_email, $pass2;
+//$email = $password = $filtered_email = $pass2 = "";
 $emailError = $passwordError = "";
 
 function formData($data) {
@@ -71,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- Validation Form -->
 <div class="container" align="center">
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+    <form action="" method="post">
         <div class="card bg-dark text-center card-form">
             <div class="card-body">
                 <h3 class="text-light">Login</h3>
@@ -90,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
-                    <input type="submit" class="btn btn-outline-light btn-block" placeholder="Sign Up">
+                    <input type="submit" class="btn btn-outline-light btn-block">
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
 <!--                    <small class="form-control form-control-lg">--><?php //echo $me?><!--</small>-->
@@ -133,8 +134,14 @@ function login($db_email, $db_password) {
         die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
     } //check connection
 
+    $id_query = "SELECT id FROM Users WHERE email = '$db_email'";
+    $fname_query = "SELECT firstname FROM Users WHERE email = '$db_email'";
+    $lname_query = "SELECT lastname FROM Users WHERE email = '$db_email'";
     $email_sql = "SELECT email FROM Users WHERE email='$db_email'";
     $password_sql = "SELECT password FROM Users WHERE password = '$db_password'";
+    $key_query = "SELECT activation_key FROM Users WHERE email = '$db_email'";
+    $active_query = "SELECT is_active FROM Users WHERE email = '$db_email'";
+
     $email_result = mysqli_query($connection, $email_sql);
     $password_result = mysqli_query($connection, $password_sql);
     $email_count = mysqli_num_rows($email_result);
@@ -151,7 +158,8 @@ function login($db_email, $db_password) {
             return "User NOT found! Try a different email and password!";
         }
     } else {
-        return $filtered_email . "\t" . $pass2;
+        echo $filtered_email . "\t" . $pass2;
+
     }
 
     mysqli_close($connection);
