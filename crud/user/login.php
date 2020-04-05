@@ -45,20 +45,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
     <div class="container">
-        <a href="index.php" class="navbar-brand">PHP Crud App Tutorial</a>
+        <a href="http://localhost:8080/PHP-Crud-App/crud/index.php" class="navbar-brand">PHP Crud App Tutorial</a>
         <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="http://localhost:8080/crud/index.php" class="nav-link">Index</a>
+                    <a href="http://localhost:8080/PHP-Crud-App/crud/index.php" class="nav-link">Index</a>
                 </li>
                 <li class="nav-item">
-                    <a href="http://localhost:8080/crud/user/login.php" class="nav-link">Login</a>
+                    <a href="http://localhost:8080/PHP-Crud-App/crud/user/login.php" class="nav-link">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a href="http://localhost:8080/crud/user/signup.php" class="nav-link">Sign Up</a>
+                    <a href="http://localhost:8080/PHP-Crud-App/crud/user/signup.php" class="nav-link">Sign Up</a>
                 </li>
                 <!--                <li class="nav-item">-->
                 <!--                    <a href="#share-head-section" class="nav-link">Share</a>-->

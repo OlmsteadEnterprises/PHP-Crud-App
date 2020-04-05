@@ -25,13 +25,13 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="index.php" class="nav-link">Index</a>
+                    <a href="http://localhost:8080/PHP-Crud-App/crud/index.php" class="nav-link">Index</a>
                 </li>
                 <li class="nav-item">
-                    <a href="user/login.php" class="nav-link">Login</a>
+                    <a href="http://localhost:8080/PHP-Crud-App/crud/user/login.php" class="nav-link">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a href="user/signup.php" class="nav-link">Sign Up</a>
+                    <a href="http://localhost:8080/PHP-Crud-App/crud/user/signup.php" class="nav-link">Sign Up</a>
 <!--                    --><?php //include ("user/signup.php"); ?>
                 </li>
 <!--                <li class="nav-item">-->
