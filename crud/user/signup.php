@@ -2,6 +2,7 @@
 //Client Side Form Validation
 $fname = $lname = $email = $password = $confirmPassword = "";
 $fnameError = $lnameError = $emailError = $passwordError = $confirmPasswordError = "";
+$fnameError2 = $lnameError2 = $emailError2 = $pwordError2 = "";
 
 function formData($data) {
     $data = trim($data);
@@ -24,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["email"])) {
         $emailError = "Invalid Email.";
     } else {
-        $email = formData($_POST["email  "]);
+        $email = formData($_POST["email"]);
     }
     if (empty($_POST["password"])) {
         $passwordError = "Password is required.";
@@ -51,20 +52,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $db_password = '';
         $db_name = 'phpcrudtutorial';
 
+
         $connection = mysqli_connect($host, $user, $db_password, $db_name);
         if (!$connection) {
             die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
         } //check connection
         if (isset($_POST['submit'])) {
-            $sql = "SELECT * FROM Users WHERE email = {'email'}";
+            $sql = "SELECT * FROM Users WHERE email = '$email'";
             $query = mysqli_query($connection, $sql);
             $count = mysqli_num_rows($query);
-            if (!empty('fname') && !empty('lname') && !empty('email') && !empty('password') && !empty('confirmPassword')) {
-                if ($count > 0) {
-                    $error = "User with Email Already Exists!";
-                }
-            }
-        }
+
+            if ($count > 0) {
+                $error = "User with Email Already Exists!";
+            } else {
+                if (!empty($fname) && !empty($lname) && !empty($email) && !empty($password) && !empty($confirmPassword)) {
+                    $firstName = mysqli_real_escape_string($connection, $fname);
+                    $lastName = mysqli_real_escape_string($connection, $lname);
+                    $email2 = mysqli_real_escape_string($connection, $email);
+                    $pword = mysqli_real_escape_string($connection, $password);
+                    //$confirmPword = mysqli_real_escape_string($connection, $confirmPword);
+                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        $emailError2 = "Email is invalid!";
+                    }
+                    if (!preg_match("/^[a-zA-Z]*$/", $firstName)) {
+                        $fnameError2 = "Can only use valid alphabetical letters!";
+                    }
+                    if (!preg_match("/^[a-zA-Z]*$/", $lastName)) {
+                        $lnameError2 = "Can only use alphabetical letters!";
+                    }
+                    if (!preg_match("/^\S*(?=\S{7,15})(?=\S[a-z])(?=\S[A-Z])(?=\S*[\d])\S*$/", $pword)) {
+                        $pwordError2 = "Password must be between 7-15 characters.";
+                    }
+                    if ((preg_match("/^[a-zA-Z]*$/", $firstName)) && (preg_match("/^[a-zA-Z]*$/", $lastName)) && filter_var($email, FILTER_VALIDATE_EMAIL) && preg_match("/^\S*(?=\S{7,15})(?=\S[a-z])(?=\S[A-Z])(?=\S*[\d])\S*$/")){
+                        $userActivationKey = md5(rand().time());
+                        validation($fname, $lname, $email, $password, $userActivationKey, '0', date("d-m-Y H:i:s"));
+                    }
+                }//check if fields are empty
+            }//else statement
+        }//is set statement
     }//Database Validation
 
 
@@ -130,11 +155,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $fnameError ?></small>
                     </div>
+                    <div class="alert alert-danger">
+                        <small><?php echo $fnameError2 ?></small>
+                    </div>
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="text" class="form-control form-control-lg" name="lname" placeholder="Last Name">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $lnameError; ?></small>
+                    </div>
+                    <div class="alert alert-danger">
+                        <small><?php echo $lnameError2 ?></small>
                     </div>
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
@@ -142,11 +173,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $emailError; ?></small>
                     </div>
+                    <div class="alert alert-danger">
+                        <small><?php echo $emailError2 ?></small>
+                    </div>
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="password" placeholder="Password">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $passwordError; ?></small>
+                    </div>
+                    <div class="alert alert-danger">
+                        <small><?php echo $pwordError2 ?></small>
                     </div>
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
@@ -157,9 +194,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="submit" class="btn btn-outline-light btn-block" placeholder="Sign Up" name="submit">
-                    <div class="alert alert-danger alert-dismissible">
-                        <strong><?php $error ?></strong>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <strong>--><?php //$error ?><!--</strong>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -183,8 +220,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php
 //PHP Functions
-
-function validation($fname, $lname, $email, $password) {
+function validation($fname, $lname, $email, $password, $userActivationKey, $isActive, $dateTime) {
     $host = 'localhost';
     $user = 'root';
     $db_password = '';
@@ -194,15 +230,13 @@ function validation($fname, $lname, $email, $password) {
     if (!$connection) {
         die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
     } //check connection
-    $sql = "INSERT INTO Users (firstname, lastname, email, password) VALUES ('$fname', '$lname', '$email', '$password')";
-    if (mysqli_query($connection, $sql)) {
+    $sql = "INSERT INTO Users (firstname, lastname, email, password, activation_key, is_active, date_time) VALUES ('$fname', '$lname', '$email', '$password', '$userActivationKey', '$isActive', '$dateTime')";
+    if (!mysqli_query($connection, $sql)) {
         $last_id = mysqli_insert_id($connection);
-        echo 'Data added successfully';
-    } else {
-        echo 'Data not added';
+        echo 'Query Failed!!! ' . mysqli_error($connection);
     }
 }
 
 
-
+//End of PHP Code
 ?>
