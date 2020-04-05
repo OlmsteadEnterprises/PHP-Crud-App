@@ -153,38 +153,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="text" class="form-control form-control-lg" name="fname" placeholder="First Name">
                     <div class="invalid_feedback is-invalid">
-                        <small class="text-danger"><?php echo $fnameError ?></small>
+                        <small class="text-danger"><?php echo $fnameError; ?></small>
+                        <small class="text-danger"><?php echo $fnameError2; ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $fnameError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger alert-dismissable fade show">-->
+<!--                        <small>--><?php //echo $fnameError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="text" class="form-control form-control-lg" name="lname" placeholder="Last Name">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $lnameError; ?></small>
+                        <small class="text-danger"><?php echo $lnameError2; ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $lnameError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $lnameError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="email" class="form-control form-control-lg" name="email" placeholder="Email">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $emailError; ?></small>
+                        <small class="text-danger"><?php echo $emailError2; ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $emailError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $emailError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="password" placeholder="Password">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $passwordError; ?></small>
+                        <small class="text-danger"><?php echo $pwordError2; ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $pwordError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $pwordError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="confirmPassword" placeholder="Confirm Password">
