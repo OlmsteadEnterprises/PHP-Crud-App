@@ -80,13 +80,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if (!preg_match("/^[a-zA-Z]*$/", $lastName)) {
                         $lnameError2 = "Can only use alphabetical letters!";
                     }
-                    if (!preg_match("/^\S*(?=\S{7,15})(?=\S[a-z])(?=\S[A-Z])(?=\S*[\d])\S*$/", $pword)) {
-                        $pwordError2 = "Password must be between 7-15 characters.";
-                    }
-                    if ((preg_match("/^[a-zA-Z]*$/", $firstName)) && (preg_match("/^[a-zA-Z]*$/", $lastName)) && filter_var($email, FILTER_VALIDATE_EMAIL) && preg_match("/^\S*(?=\S{7,15})(?=\S[a-z])(?=\S[A-Z])(?=\S*[\d])\S*$/")){
-                        $userActivationKey = md5(rand().time());
-                        validation($fname, $lname, $email, $password, $userActivationKey, '0', date("d-m-Y H:i:s"));
-                    }
+//                    if (!preg_match("/^\S*(?=\S{7,15})(?=\S[a-z])(?=\S[A-Z])(?=\S*[\d])\S*$/", $pword)) {
+//                        $pwordError2 = "Password must be between 7-15 characters.";
+//                    }
+//                    if ((preg_match("/^[a-zA-Z]*$/", $firstName)) && (preg_match("/^[a-zA-Z]*$/", $lastName)) && filter_var($email, FILTER_VALIDATE_EMAIL)){
+//                        $userActivationKey = md5(rand().time());
+//                        validation($fname, $lname, $email, $password, $userActivationKey, '0', date("d-m-Y H:i:s"));
+//                    }
+                    $userActivationKey = md5(rand().time());
+                    validation($firstName, $lastName, $email2, $pword, $userActivationKey, '0');
                 }//check if fields are empty
             }//else statement
         }//is set statement
@@ -154,37 +156,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="text" class="form-control form-control-lg" name="fname" placeholder="First Name">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $fnameError ?></small>
+                        <small class="text-danger"><?php echo $fnameError2 ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $fnameError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $fnameError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="text" class="form-control form-control-lg" name="lname" placeholder="Last Name">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $lnameError; ?></small>
+                        <small class="text-danger"><?php echo $lnameError2 ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $lnameError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $lnameError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="email" class="form-control form-control-lg" name="email" placeholder="Email">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $emailError; ?></small>
+                        <small class="text-danger"><?php echo $emailError2 ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $emailError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $emailError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="password" placeholder="Password">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $passwordError; ?></small>
+                        <small class="text-danger"><?php echo $pwordError2 ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $pwordError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $pwordError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="confirmPassword" placeholder="Confirm Password">
@@ -220,7 +226,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php
 //PHP Functions
-function validation($fname, $lname, $email, $password, $userActivationKey, $isActive, $dateTime) {
+function validation($fname, $lname, $email, $password, $userActivationKey, $isActive) {
     $host = 'localhost';
     $user = 'root';
     $db_password = '';
@@ -230,7 +236,7 @@ function validation($fname, $lname, $email, $password, $userActivationKey, $isAc
     if (!$connection) {
         die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
     } //check connection
-    $sql = "INSERT INTO Users (firstname, lastname, email, password, activation_key, is_active, date_time) VALUES ('$fname', '$lname', '$email', '$password', '$userActivationKey', '$isActive', '$dateTime')";
+    $sql = "INSERT INTO Users (firstname, lastname, email, password, activation_key, is_active, date_time) VALUES ('$fname', '$lname', '$email', '$password', '$userActivationKey', '$isActive', current_date )";
     if (!mysqli_query($connection, $sql)) {
         $last_id = mysqli_insert_id($connection);
         echo 'Query Failed!!! ' . mysqli_error($connection);
