@@ -52,7 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $db_password = '';
         $db_name = 'phpcrudtutorial';
 
-
         $connection = mysqli_connect($host, $user, $db_password, $db_name);
         if (!$connection) {
             die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
@@ -62,14 +61,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $query = mysqli_query($connection, $sql);
             $count = mysqli_num_rows($query);
 
+//            $saltQuery = "SELECT randSaltPass FROM Users";
+//            $sqlSalt = mysqli_query($connection, $saltQuery);
+//            $row = mysqli_fetch_array($sqlSalt);
+//            $salt = $row['randSaltPass'];
+//            $cryptPassword = crypt($password, $salt);
+//
+//            $hash = password_hash($password, PASSWORD_BCRYPT);
+            //var_dump($hash);
             if ($count > 0) {
                 $error = "User with Email Already Exists!";
             } else {
                 if (!empty($fname) && !empty($lname) && !empty($email) && !empty($password) && !empty($confirmPassword)) {
-                    $firstName = mysqli_real_escape_string($connection, $fname);
-                    $lastName = mysqli_real_escape_string($connection, $lname);
-                    $email2 = mysqli_real_escape_string($connection, $email);
-                    $pword = mysqli_real_escape_string($connection, $password);
+                    $firstName = ucwords(mysqli_real_escape_string($connection, $fname));
+                    $lastName = ucwords(mysqli_real_escape_string($connection, $lname));
+                    $email2 = ucwords(mysqli_real_escape_string($connection, $email));
+                    $pword = ucwords(mysqli_real_escape_string($connection, $password));
+                    $hash = password_hash($_POST['password'], PASSWORD_BCRYPT);
                     //$confirmPword = mysqli_real_escape_string($connection, $confirmPword);
                     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         $emailError2 = "Email is invalid!";
@@ -80,13 +88,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if (!preg_match("/^[a-zA-Z]*$/", $lastName)) {
                         $lnameError2 = "Can only use alphabetical letters!";
                     }
-                    if (!preg_match("/^\S*(?=\S{7,15})(?=\S[a-z])(?=\S[A-Z])(?=\S*[\d])\S*$/", $pword)) {
-                        $pwordError2 = "Password must be between 7-15 characters.";
+//                    if (!preg_match("/^\S*(?=\S{7,15})(?=\S[a-z])(?=\S[A-Z])(?=\S*[\d])\S*$/", $pword)) {
+//                        $pwordError2 = "Password must be between 7-15 characters.";
+//                    }
+                    $userActivationKey = md5(rand().time());
+                    $sql = "INSERT INTO Users (firstname, lastname, email, password, activation_key, is_active, date_time) VALUES ('$firstName', '$lastName', '$email2', '$pword', '$userActivationKey', '0', current_date )";
+                    if (!mysqli_query($connection, $sql)) {
+                        $last_id = mysqli_insert_id($connection);
+                        echo 'Query Failed!!! ' . mysqli_error($connection);
+                    } else {
+                        echo 'Query SUCCESSFUL!';
                     }
-                    if ((preg_match("/^[a-zA-Z]*$/", $firstName)) && (preg_match("/^[a-zA-Z]*$/", $lastName)) && filter_var($email, FILTER_VALIDATE_EMAIL) && preg_match("/^\S*(?=\S{7,15})(?=\S[a-z])(?=\S[A-Z])(?=\S*[\d])\S*$/")){
-                        $userActivationKey = md5(rand().time());
-                        validation($fname, $lname, $email, $password, $userActivationKey, '0', date("d-m-Y H:i:s"));
-                    }
+
+
                 }//check if fields are empty
             }//else statement
         }//is set statement
@@ -153,38 +167,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="text" class="form-control form-control-lg" name="fname" placeholder="First Name">
                     <div class="invalid_feedback is-invalid">
-                        <small class="text-danger"><?php echo $fnameError ?></small>
+                        <small class="text-danger"><?php echo $fnameError; ?></small>
+                        <small class="text-danger"><?php echo $fnameError2; ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $fnameError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger alert-dismissable fade show">-->
+<!--                        <small>--><?php //echo $fnameError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="text" class="form-control form-control-lg" name="lname" placeholder="Last Name">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $lnameError; ?></small>
+                        <small class="text-danger"><?php echo $lnameError2; ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $lnameError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $lnameError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="email" class="form-control form-control-lg" name="email" placeholder="Email">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $emailError; ?></small>
+                        <small class="text-danger"><?php echo $emailError2; ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $emailError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $emailError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="password" placeholder="Password">
                     <div class="invalid_feedback is-invalid">
                         <small class="text-danger"><?php echo $passwordError; ?></small>
+                        <small class="text-danger"><?php echo $pwordError2; ?></small>
                     </div>
-                    <div class="alert alert-danger">
-                        <small><?php echo $pwordError2 ?></small>
-                    </div>
+<!--                    <div class="alert alert-danger">-->
+<!--                        <small>--><?php //echo $pwordError2 ?><!--</small>-->
+<!--                    </div>-->
                 </div>
                 <div class="form-group col-md-5 ml-auto mr-auto">
                     <input type="password" class="form-control form-control-lg" name="confirmPassword" placeholder="Confirm Password">
