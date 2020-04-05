@@ -4,13 +4,6 @@ $fname = $lname = $email = $password = $confirmPassword = "";
 $fnameError = $lnameError = $emailError = $passwordError = $confirmPasswordError = "";
 $fnameError2 = $lnameError2 = $emailError2 = $pwordError2 = "";
 
-function formData($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["fname"])) {
         $fnameError = "First Name is required.";
@@ -82,11 +75,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         $emailError2 = "Email is invalid!";
                     }
-                    if (!preg_match("/^[a-zA-Z]*$/", $firstName)) {
+                    else if (!preg_match("/^[a-zA-Z]*$/", $firstName)) {
                         $fnameError2 = "Can only use valid alphabetical letters!";
                     }
-                    if (!preg_match("/^[a-zA-Z]*$/", $lastName)) {
+                    else if (!preg_match("/^[a-zA-Z]*$/", $lastName)) {
                         $lnameError2 = "Can only use alphabetical letters!";
+                    } else {
+                        $userActivationKey = md5(rand().time());
+                        validation($firstName, $lastName, $email2, $pword, $userActivationKey, '0');
                     }
 //                    if (!preg_match("/^\S*(?=\S{7,15})(?=\S[a-z])(?=\S[A-Z])(?=\S*[\d])\S*$/", $pword)) {
 //                        $pwordError2 = "Password must be between 7-15 characters.";
@@ -95,26 +91,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 //                        $userActivationKey = md5(rand().time());
 //                        validation($fname, $lname, $email, $password, $userActivationKey, '0', date("d-m-Y H:i:s"));
 //                    }
-                    $userActivationKey = md5(rand().time());
-                    validation($firstName, $lastName, $email2, $pword, $userActivationKey, '0');
-//                    $userActivationKey = md5(rand().time());
-//                    $sql = "INSERT INTO Users (firstname, lastname, email, password, activation_key, is_active, date_time) VALUES ('$firstName', '$lastName', '$email2', '$pword', '$userActivationKey', '0', current_date )";
-//                    if (!mysqli_query($connection, $sql)) {
-//                        $last_id = mysqli_insert_id($connection);
-//                        echo 'Query Failed!!! ' . mysqli_error($connection);
-//                    } else {
-//                        echo 'Query SUCCESSFUL!';
-//                    }
 
                 }//check if fields are empty
             }//else statement
         }//is set statement
     }//Database Validation
 
-
-
 }//outer if statement
-
 
 ?><!-- End of PHP Code -->
 <!DOCTYPE html>
@@ -246,6 +229,11 @@ function validation($fname, $lname, $email, $password, $userActivationKey, $isAc
     }
 }
 
-
+function formData($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
 //End of PHP Code
 ?>
