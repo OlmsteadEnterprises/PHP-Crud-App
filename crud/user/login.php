@@ -1,6 +1,6 @@
 <?php
 //Login PHP File
-$email = $password = "";
+$email = $password = $filtered_email = $pass2 = "";
 $emailError = $passwordError = "";
 
 function formData($data) {
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $password = formData($_POST["password"]);
     }
-    login($email, $password);
+//    login($email, $password);
 }//outer if statement
 //End of PHP Code
 ?>
@@ -140,14 +140,19 @@ function login($db_email, $db_password) {
     $email_count = mysqli_num_rows($email_result);
     $password_count = mysqli_num_rows($password_result);
 
-    echo $db_email . "\t" . $db_password;
+    $filtered_email = filter_var($db_email, FILTER_SANITIZE_EMAIL);
+    $pass2 = mysqli_real_escape_string($connection, $db_password);
 
-//    if ($email_result == $db_email && $password_result == $db_password) {
-//        echo $email_result . "\t" . $password;
-//    } else {
-//        echo "Incorrect email or password";
-//    }
-
+    if (!$email_sql) {
+        die("QUERY FAILED!!! " . mysqli_error($connection));
+    }
+    if($email_count <= 0) {
+        if (!empty($db_email) && !empty($db_password)) {
+            return "User NOT found! Try a different email and password!";
+        }
+    } else {
+        return $filtered_email . "\t" . $pass2;
+    }
 
     mysqli_close($connection);
 }//login function
