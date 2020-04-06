@@ -41,9 +41,9 @@ if(!isset($_SESSION)) {
                 <li class="nav-item">
                     <a href="http://localhost:8080/PHP-Crud-App/crud/home.php" class="nav-link">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a href="http://localhost:8080/PHP-Crud-App/crud/index.php" class="nav-link">Index</a>
-                </li>
+<!--                <li class="nav-item">-->
+<!--                    <a href="http://localhost:8080/PHP-Crud-App/crud/index.php" class="nav-link">Index</a>-->
+<!--                </li>-->
                 <li class="nav-item">
                     <a href="http://localhost:8080/PHP-Crud-App/crud/user/login.php" class="nav-link"><?php logout(); ?>Logout</a>
                 </li>
