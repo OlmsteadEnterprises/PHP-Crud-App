@@ -42,11 +42,9 @@
     </div>
 </nav>
 
-
-
-
-
-
+<h1 align="center">Welcome to this PHP CRUD App</h1>
+<h3 align="center">This is simply a basic create, read, update, and delete web app written in PHP.  For simplicity, the user login is simply to display certain skills for employers of the individual who created this web app.</h3>
+<br><br>
 
 
 <!-- Necessary Scripts for Bootstrap -->
