@@ -1,6 +1,18 @@
 <?php
 //Login PHP File
+session_start();
+session_set_cookie_params(0);
+//session.session_save_path("../../crud/");
+global $_SESSION;
+global $connection;
 global $email, $password, $filtered_email, $pass2;
+global $user_id;
+global $user_firstname;
+global $user_lastname;
+global $user_email;
+global $user_password;
+global $user_activation_key;
+
 //$email = $password = $filtered_email = $pass2 = "";
 $emailError = $passwordError = "";
 
@@ -72,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- Validation Form -->
 <div class="container" align="center">
-    <form action="" method="post">
+    <form action="../../crud/home.php" method="post">
         <div class="card bg-dark text-center card-form">
             <div class="card-body">
                 <h3 class="text-light">Login</h3>
@@ -134,16 +146,15 @@ function login($db_email, $db_password) {
         die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
     } //check connection
 
-    $id_query = "SELECT id FROM Users WHERE email = '$db_email'";
-    $fname_query = "SELECT firstname FROM Users WHERE email = '$db_email'";
-    $lname_query = "SELECT lastname FROM Users WHERE email = '$db_email'";
-    $email_sql = "SELECT email FROM Users WHERE email='$db_email'";
+
+    $email_sql = "SELECT id, firstname, lastname, email, password, activation_key FROM Users WHERE email='$db_email'";
     $password_sql = "SELECT password FROM Users WHERE password = '$db_password'";
-    $key_query = "SELECT activation_key FROM Users WHERE email = '$db_email'";
-    $active_query = "SELECT is_active FROM Users WHERE email = '$db_email'";
+
+
 
     $email_result = mysqli_query($connection, $email_sql);
     $password_result = mysqli_query($connection, $password_sql);
+
     $email_count = mysqli_num_rows($email_result);
     $password_count = mysqli_num_rows($password_result);
 
@@ -158,13 +169,42 @@ function login($db_email, $db_password) {
             return "User NOT found! Try a different email and password!";
         }
     } else {
-        echo $filtered_email . "\t" . $pass2;
+        echo $filtered_email . "  " . $pass2 . "<br><br>";
+        if (mysqli_num_rows($email_result) > 0) {
+            //print_r(mysqli_fetch_assoc($email_result));
+            while ($row = mysqli_fetch_assoc($email_result)) {
+                $user_id = $row['id'];
+                $user_firstname = $row['firstname'];
+                $user_lastname = $row['lastname'];
+                $user_email = $row['email'];
+                $user_password = $row['password'];
+                $user_activation_key = $row['activation_key'];
 
-    }
+
+                $_SESSION['id'] = $user_id;
+                $_SESSION['firstname'] = $user_firstname;
+                $_SESSION['lastname'] = $user_lastname;
+                $_SESSION['email'] = $user_email;
+                $_SESSION['password'] = $user_password;
+                $_SESSION['activation_key'] = $user_activation_key;
+                $_SESSION['dog'] = "Kenai";
+            }
+
+
+            echo "Id: " . $user_id . "    First Name: " . $user_firstname . "    Last Name: " . $user_lastname . "      Email: " . $user_email;
+        }
+
+
+
+    }//else statement
 
     mysqli_close($connection);
 }//login function
 
+
+//echo ("Id: " . $_SESSION['id'] . "    First Name: " . $_SESSION['firstname'] . "    Last Name: " . $_SESSION['lastname'] . "      Email: " . $_SESSION['email']);
+//echo "Sessions Test (Dog): " . $_SESSION['dog'] . "<br>";
+//echo "First Name: " . $_SESSION['firstname'];
 
 
 
