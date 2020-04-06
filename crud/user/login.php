@@ -136,7 +136,7 @@ function login($db_email, $db_password) {
     } //check connection
 
 
-    $email_sql = "SELECT firstname, lastname, email FROM Users WHERE email='$db_email'";
+    $email_sql = "SELECT id, firstname, lastname, email, password, activation_key FROM Users WHERE email='$db_email'";
     $password_sql = "SELECT password FROM Users WHERE password = '$db_password'";
 
 
@@ -159,19 +159,28 @@ function login($db_email, $db_password) {
         }
     } else {
         echo $filtered_email . "  " . $pass2 . "<br><br>";
-        //$user_id = $user_firstname = $user_lastname = $user_email = $user_password = $user_activation = "";
         if (mysqli_num_rows($email_result) > 0) {
-            print_r(mysqli_fetch_assoc($email_result));
+            //print_r(mysqli_fetch_assoc($email_result));
+            while ($row = mysqli_fetch_assoc($email_result)) {
+                $user_id = $row['id'];
+                $user_firstname = $row['firstname'];
+                $user_lastname = $row['lastname'];
+                $user_email = $row['email'];
+                $user_password = $row['password'];
+                $user_activation_key = $row['activation_key'];
+
+            }
+            echo "Id: " . $user_id . "    First Name: " . $user_firstname . "    Last Name: " . $user_lastname . "      Email: " . $user_email;
         }
+        $_SESSION['id'] = $user_id;
+        $_SESSION['firstname'] = $user_firstname;
+        $_SESSION['lastname'] = $user_lastname;
+        $_SESSION['email'] = $user_email;
+        $_SESSION['password'] = $user_password;
+        $_SESSION['activation_key'] = $user_activation_key;
 
-//        $_SESSION['id'] = $id;
-//        $_SESSION['firstname'] = $firstname;
-//        $_SESSION['lastname'] = $lastname;
-//        $_SESSION['email'] = $email;
-//        $_SESSION['password'] = $password;
-//        $_SESSION['avtivation_key'] = $activation;
 
-    }
+    }//else statement
 
     mysqli_close($connection);
 }//login function
