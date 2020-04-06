@@ -1,7 +1,18 @@
 <?php
 //Login PHP File
+session_start();
+session_set_cookie_params(0);
+//session.session_save_path("../../crud/");
+global $_SESSION;
 global $connection;
 global $email, $password, $filtered_email, $pass2;
+global $user_id;
+global $user_firstname;
+global $user_lastname;
+global $user_email;
+global $user_password;
+global $user_activation_key;
+
 //$email = $password = $filtered_email = $pass2 = "";
 $emailError = $passwordError = "";
 
@@ -73,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- Validation Form -->
 <div class="container" align="center">
-    <form action="" method="post">
+    <form action="../../crud/home.php" method="post">
         <div class="card bg-dark text-center card-form">
             <div class="card-body">
                 <h3 class="text-light">Login</h3>
@@ -169,15 +180,20 @@ function login($db_email, $db_password) {
                 $user_password = $row['password'];
                 $user_activation_key = $row['activation_key'];
 
+
+                $_SESSION['id'] = $user_id;
+                $_SESSION['firstname'] = $user_firstname;
+                $_SESSION['lastname'] = $user_lastname;
+                $_SESSION['email'] = $user_email;
+                $_SESSION['password'] = $user_password;
+                $_SESSION['activation_key'] = $user_activation_key;
+                $_SESSION['dog'] = "Kenai";
             }
+
+
             echo "Id: " . $user_id . "    First Name: " . $user_firstname . "    Last Name: " . $user_lastname . "      Email: " . $user_email;
         }
-        $_SESSION['id'] = $user_id;
-        $_SESSION['firstname'] = $user_firstname;
-        $_SESSION['lastname'] = $user_lastname;
-        $_SESSION['email'] = $user_email;
-        $_SESSION['password'] = $user_password;
-        $_SESSION['activation_key'] = $user_activation_key;
+
 
 
     }//else statement
@@ -185,6 +201,10 @@ function login($db_email, $db_password) {
     mysqli_close($connection);
 }//login function
 
+
+//echo ("Id: " . $_SESSION['id'] . "    First Name: " . $_SESSION['firstname'] . "    Last Name: " . $_SESSION['lastname'] . "      Email: " . $_SESSION['email']);
+//echo "Sessions Test (Dog): " . $_SESSION['dog'] . "<br>";
+//echo "First Name: " . $_SESSION['firstname'];
 
 
 
