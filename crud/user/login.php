@@ -1,5 +1,6 @@
 <?php
 //Login PHP File
+global $connection;
 global $email, $password, $filtered_email, $pass2;
 //$email = $password = $filtered_email = $pass2 = "";
 $emailError = $passwordError = "";
@@ -134,16 +135,15 @@ function login($db_email, $db_password) {
         die("CONNECTION TO DB FAILED.  " . mysqli_error($connection));
     } //check connection
 
-    $id_query = "SELECT id FROM Users WHERE email = '$db_email'";
-    $fname_query = "SELECT firstname FROM Users WHERE email = '$db_email'";
-    $lname_query = "SELECT lastname FROM Users WHERE email = '$db_email'";
-    $email_sql = "SELECT email FROM Users WHERE email='$db_email'";
+
+    $email_sql = "SELECT firstname, lastname, email FROM Users WHERE email='$db_email'";
     $password_sql = "SELECT password FROM Users WHERE password = '$db_password'";
-    $key_query = "SELECT activation_key FROM Users WHERE email = '$db_email'";
-    $active_query = "SELECT is_active FROM Users WHERE email = '$db_email'";
+
+
 
     $email_result = mysqli_query($connection, $email_sql);
     $password_result = mysqli_query($connection, $password_sql);
+
     $email_count = mysqli_num_rows($email_result);
     $password_count = mysqli_num_rows($password_result);
 
@@ -158,7 +158,18 @@ function login($db_email, $db_password) {
             return "User NOT found! Try a different email and password!";
         }
     } else {
-        echo $filtered_email . "\t" . $pass2;
+        echo $filtered_email . "  " . $pass2 . "<br><br>";
+        //$user_id = $user_firstname = $user_lastname = $user_email = $user_password = $user_activation = "";
+        if (mysqli_num_rows($email_result) > 0) {
+            print_r(mysqli_fetch_assoc($email_result));
+        }
+
+//        $_SESSION['id'] = $id;
+//        $_SESSION['firstname'] = $firstname;
+//        $_SESSION['lastname'] = $lastname;
+//        $_SESSION['email'] = $email;
+//        $_SESSION['password'] = $password;
+//        $_SESSION['avtivation_key'] = $activation;
 
     }
 
